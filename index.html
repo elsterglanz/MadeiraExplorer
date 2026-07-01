@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>
+Madeira 2026 Reise-App
+</title>
+
+
+<link rel="stylesheet"
+href="style.css">
+
+
+<link rel="manifest"
+href="manifest.json">
+
+
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet/dist/leaflet.css">
+
+
+</head>
+
+
+<body>
+
+
+<header>
+
+<h1>🌴 Madeira 2026</h1>
+
+<p>
+07.07.–17.07.2026<br>
+📍 Arco da Calheta
+</p>
+
+
+<div class="badges">
+
+<span>🌊 Baden</span>
+<span>🤿 Schnorcheln</span>
+<span>🥾 Wandern</span>
+<span>🚗 Mietwagen</span>
+
+</div>
+
+
+</header>
+
+
+
+<nav>
+
+<a href="#karte">🗺️ Karte</a>
+
+<a href="#plan">📅 Plan</a>
+
+<a href="#spots">⭐ Spots</a>
+
+<a href="#tagebuch">📝 Tagebuch</a>
+
+<a href="#" onclick="toggleCoordinateEditor()">🛠️ Service</a>
+
+</nav>
+
+
+
+
+<main class="layout">
+
+    <section class="card map-card" id="karte">
+
+        <h2>🗺️ Interaktive Karte</h2>
+
+        <div id="filterBar" class="filter-bar"></div>
+
+        <div id="map"></div>
+
+    </section>
+
+    <aside class="card details-card">
+
+        <h2>📍 Spotinformationen</h2>
+
+        <div id="spotDetails">
+
+            <p>Wähle einen Marker auf der Karte aus.</p>
+
+        </div>
+
+    </aside>
+
+    <section class="card" id="plan">
+
+        <h2>📅 Reiseplan</h2>
+
+        <div class="day">
+
+<input type="checkbox">
+
+<b>07.07.</b>
+
+Ankunft · Calheta Strand
+
+<br>
+
+<a target="_blank"
+href="https://www.google.com/maps/search/?api=1&query=Praia+da+Calheta+Madeira">
+
+Route starten
+
+</a>
+
+</div>
+
+
+
+<div class="day">
+
+<input type="checkbox">
+
+<b>08.07.</b>
+
+Rabaçal · 25 Fontes
+
+<br>
+
+Levada Wanderung
+
+</div>
+
+
+
+
+<div class="day">
+
+<input type="checkbox">
+
+<b>09.07.</b>
+
+Porto Moniz + Seixal
+
+<br>
+
+🌊 Baden & Schnorcheln
+
+</div>
+
+
+
+
+<div class="day">
+
+<input type="checkbox">
+
+<b>11.07.</b>
+
+Garajau
+
+<br>
+
+🐠 Unterwasserwelt
+
+</div>
+
+
+
+
+<div class="day">
+
+<input type="checkbox">
+
+<b>14.07.</b>
+
+Ponta de São Lourenço
+
+<br>
+
+🥾 Küstenwanderung
+
+</div>
+
+    </section>
+
+    <section class="card" id="spots">
+
+        <h2>⭐ Favoriten</h2>
+
+        <div id="favorites"></div>
+
+    </section>
+
+    <section class="card" id="tagebuch">
+
+        <h2>📝 Urlaubstagebuch</h2>
+
+        <textarea
+            id="notes"
+            placeholder="Unser schönster Moment..."
+        ></textarea>
+
+        <button onclick="saveNotes()">
+            Speichern
+        </button>
+
+    </section>
+
+</main>
+
+
+
+
+
+<footer>
+
+🌴 Madeira 2026
+
+</footer>
+
+
+
+
+
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script src="spots.js"></script>
+
+<script src="map.js"></script>
+
+<script src="app.js"></script>
+
+
+<div id="poiEditor" class="editor" style="display:none">
+
+<h2>Koordinaten bearbeiten</h2>
+
+<select id="poiSelect"></select>
+
+<br><br>
+
+Latitude<br>
+<input id="latInput" type="number" step="0.0000001">
+
+<br><br>
+
+Longitude<br>
+<input id="lngInput" type="number" step="0.0000001">
+
+<br><br>
+
+<button onclick="enableDrag()">
+📍 Marker verschieben
+</button>
+
+<button onclick="saveCoordinates()">
+💾 Speichern
+</button>
+
+<button onclick="closePoiEditor()">
+❌ Schließen
+</button>
+
+</div>
+
+
+</body>
+
+</html>

@@ -1,0 +1,805 @@
+:root {
+
+    --ocean: #0077b6;
+    --sea: #00b4d8;
+    --green: #2a9d8f;
+    --sand: #fefae0;
+    --dark: #264653;
+    --light: #f3f8f9;
+    --white: #ffffff;
+
+}
+
+
+* {
+    box-sizing:border-box;
+}
+
+
+html {
+    scroll-behavior:smooth;
+}
+
+
+
+body {
+
+    margin:0;
+
+    font-family:
+    "Segoe UI",
+    Arial,
+    sans-serif;
+
+    background:
+    var(--light);
+
+    color:#333;
+
+}
+
+
+
+
+/* Kopfbereich */
+
+header {
+
+    background:
+
+    linear-gradient(
+    rgba(0,119,182,.75),
+    rgba(38,70,83,.85)
+    ),
+
+    url("bilder/calheta.jpg");
+
+
+    background-size:cover;
+
+    background-position:center;
+
+    color:white;
+
+    text-align:center;
+
+    padding:
+    70px 20px 50px;
+
+
+}
+
+
+
+header h1 {
+
+    font-size:
+    clamp(2rem,7vw,3.5rem);
+
+    margin:
+    0 0 15px;
+
+}
+
+
+
+header p {
+
+    font-size:1.2rem;
+
+}
+
+
+
+
+.badges {
+
+    margin-top:25px;
+
+}
+
+
+
+.badges span {
+
+
+    display:inline-block;
+
+    background:
+    rgba(255,255,255,.2);
+
+
+    padding:
+    8px 15px;
+
+
+    border-radius:
+    30px;
+
+
+    margin:
+    5px;
+
+
+    backdrop-filter:
+    blur(5px);
+
+}
+
+
+
+
+
+/* Navigation */
+
+
+nav {
+
+    position:sticky;
+
+    top:0;
+
+    z-index:1000;
+
+    background:white;
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:10px;
+
+    padding:12px;
+
+    box-shadow:
+    0 3px 10px #0002;
+
+}
+
+
+nav a {
+
+    text-decoration:none;
+
+    color:
+    var(--ocean);
+
+
+    font-weight:bold;
+
+
+    padding:
+    8px 12px;
+
+
+    border-radius:
+    20px;
+
+}
+
+
+
+nav a:hover {
+
+    background:
+    #e5f6fa;
+
+}
+
+
+
+
+
+/* Hauptbereich */
+
+
+main {
+
+    max-width:
+    1000px;
+
+
+    margin:auto;
+
+
+    padding:
+    20px;
+
+}
+
+
+
+
+.card {
+
+    background:
+    var(--white);
+
+
+    border-radius:
+    22px;
+
+
+    padding:
+    25px;
+
+
+    margin:
+    25px 0;
+
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,.08);
+
+}
+
+
+
+.card h2 {
+
+    color:
+    var(--ocean);
+
+    margin-top:0;
+
+}
+
+
+
+
+
+/* Wetter */
+
+
+.weather {
+
+    display:flex;
+
+    justify-content:
+    space-around;
+
+    text-align:center;
+
+
+}
+
+
+
+.weather div {
+
+    background:
+    #eaf7f8;
+
+
+    padding:
+    15px;
+
+
+    border-radius:
+    15px;
+
+
+    min-width:
+    90px;
+
+}
+
+
+
+
+/* Karte */
+
+
+#map {
+
+    height:
+    520px;
+
+
+    border-radius:
+    18px;
+
+
+    overflow:hidden;
+
+
+}
+
+
+
+
+
+
+/* Tagesplan */
+
+
+.day {
+
+    background:
+    #eefafa;
+
+
+    border-left:
+    6px solid var(--sea);
+
+
+    padding:
+    18px;
+
+
+    margin:
+    15px 0;
+
+
+    border-radius:
+    12px;
+
+
+}
+
+
+
+.day input {
+
+    transform:
+    scale(1.4);
+
+
+    margin-right:
+    10px;
+
+}
+
+
+
+.day a {
+
+    color:
+    var(--ocean);
+
+
+    font-weight:bold;
+
+
+    display:inline-block;
+
+
+    margin-top:
+    8px;
+
+}
+
+
+
+
+
+
+
+/* Favoriten */
+
+
+.favorite {
+
+
+    background:
+    var(--sand);
+
+
+    border-radius:
+    15px;
+
+
+    padding:
+    15px;
+
+
+    margin:
+    12px 0;
+
+}
+
+
+.favorite button {
+
+
+    background:
+    var(--green);
+
+
+    border:0;
+
+
+    color:white;
+
+
+    padding:
+    10px 15px;
+
+
+    border-radius:
+    20px;
+
+
+    cursor:pointer;
+
+
+}
+
+
+
+
+
+
+
+/* Tagebuch */
+
+
+textarea {
+
+
+    width:100%;
+
+
+    min-height:
+    140px;
+
+
+    border-radius:
+    15px;
+
+
+    border:
+    2px solid #ddd;
+
+
+    padding:
+    15px;
+
+
+    font-size:
+    1rem;
+
+
+    resize:
+    vertical;
+
+}
+
+
+
+button {
+
+
+    background:
+    var(--ocean);
+
+
+    color:white;
+
+
+    border:0;
+
+
+    padding:
+    12px 20px;
+
+
+    border-radius:
+    25px;
+
+
+    margin-top:
+    10px;
+
+
+    cursor:pointer;
+
+
+    font-size:
+    1rem;
+
+}
+
+
+
+button:hover {
+
+
+    background:
+    var(--dark);
+
+}
+
+
+
+
+
+
+/* Footer */
+
+
+footer {
+
+
+    background:
+    var(--dark);
+
+
+    color:white;
+
+
+    text-align:center;
+
+
+    padding:
+    25px;
+
+
+}
+
+
+
+
+
+
+
+/* Handyoptimierung */
+
+
+@media(max-width:700px){
+
+
+    nav {
+
+
+        overflow-x:auto;
+
+
+        justify-content:flex-start;
+
+
+    }
+
+
+
+    nav a {
+
+        white-space:nowrap;
+
+    }
+
+
+
+    .weather {
+
+
+        flex-direction:
+        column;
+
+
+        gap:
+        10px;
+
+    }
+
+
+
+    #map {
+
+
+        height:
+        380px;
+
+    }
+
+
+    .card {
+
+
+        padding:
+        18px;
+
+
+    }
+
+
+}
+
+/* =======================================
+   Kartenfilter
+======================================= */
+
+.filter-bar{
+    display:flex;
+    gap:10px;
+    overflow-x:auto;
+    padding:10px;
+    margin-bottom:10px;
+    scrollbar-width:none;
+}
+
+.filter-bar::-webkit-scrollbar{
+    display:none;
+}
+
+.filter-bar button{
+
+    border:none;
+    border-radius:25px;
+    background:#f2f2f2;
+    color:#333;
+    padding:10px 16px;
+    cursor:pointer;
+    font-size:14px;
+    white-space:nowrap;
+    transition:0.2s;
+
+}
+
+.filter-bar button:hover{
+
+    background:#d9edf7;
+
+}
+
+.filter-bar button.active{
+
+    background:#0077b6;
+    color:white;
+
+}
+.spot-details{
+    margin:15px;
+    padding:15px;
+    background:#fff;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
+}
+
+.spot-details h3{
+    margin-top:0;
+    color:#0077b6;
+}
+
+.spot-details a{
+    display:inline-block;
+    margin-top:10px;
+    text-decoration:none;
+    color:#0077b6;
+    font-weight:bold;
+}
+
+.details{
+    white-space: pre-line;
+    line-height: 1.5;
+}
+
+/* Emoji-Marker */
+
+.custom-marker{
+    background: transparent;
+    border: none;
+}
+
+.marker{
+    width:30px;
+    height:30px;
+    font-size:24px;
+    line-height:30px;
+    text-align:center;
+    cursor:pointer;
+    user-select:none;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,.35));
+    transition: transform .15s;
+}
+
+.marker:hover{
+    transform: scale(1.2);
+}
+
+/* ==========================================
+   Madeira Explorer V6 Layout
+========================================== */
+
+.layout{
+
+    width:100%;
+    max-width:1450px;
+
+    margin:25px auto;
+
+    padding:0 20px;
+
+    display:grid;
+
+    gap:25px;
+
+    grid-template-columns:minmax(700px,2fr) minmax(320px,1fr);
+
+    align-items:start;
+
+    grid-template-areas:
+
+        "map details"
+        "plan favorites"
+        "plan diary";
+
+}
+
+
+/* Bereiche */
+
+.map-card{
+    grid-area:map;
+}
+
+.details-card{
+    grid-area:details;
+}
+
+#plan{
+    grid-area:plan;
+}
+
+#spots{
+    grid-area:favorites;
+}
+
+#tagebuch{
+    grid-area:diary;
+}
+
+
+/* Große Monitore */
+
+@media (min-width:1700px){
+
+    .layout{
+
+        max-width:1550px;
+
+        grid-template-columns:2.3fr 1fr;
+
+    }
+
+}
+
+
+/* Notebook / Tablet */
+
+@media (max-width:1200px){
+
+    .layout{
+
+        max-width:1000px;
+
+        grid-template-columns:1fr;
+
+        grid-template-areas:
+
+            "map"
+            "details"
+            "plan"
+            "favorites"
+            "diary";
+
+    }
+
+}
+
+
+/* Smartphone */
+
+@media (max-width:700px){
+
+    .layout{
+
+        width:100%;
+
+        padding:12px;
+
+        gap:15px;
+
+    }
+
+}
