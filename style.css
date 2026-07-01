@@ -193,17 +193,11 @@ nav a:hover {
 /* Hauptbereich */
 
 
-main {
+main{
 
-    max-width:
-    1000px;
-
-
-    margin:auto;
-
-
-    padding:
-    20px;
+    width:100%;
+    margin:0;
+    padding:0;
 
 }
 
@@ -708,7 +702,7 @@ footer {
 
     margin:25px auto;
 
-    padding:0 20px;
+    padding:20px;
 
     display:grid;
 
