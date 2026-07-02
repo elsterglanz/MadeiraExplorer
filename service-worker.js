@@ -1,4 +1,4 @@
-const CACHE="madeira-v5";
+const CACHE="madeira-v6";
 
 
 const FILES=[
@@ -6,7 +6,11 @@ const FILES=[
 "index.html",
 "style.css",
 "app.js",
-"map.js"
+"map.js",
+"spots.js",
+"manifest.json",
+"icons/icon-192.png",
+"icons/icon-512.png"
 
 ];
 
@@ -36,6 +40,33 @@ cache=>cache.addAll(FILES)
 
 );
 
+
+
+
+
+self.addEventListener(
+
+"activate",
+
+event=>{
+
+
+event.waitUntil(
+
+caches.keys().then(
+keys=>Promise.all(
+keys
+.filter(key=>key!==CACHE)
+.map(key=>caches.delete(key))
+)
+)
+
+);
+
+
+}
+
+);
 
 
 

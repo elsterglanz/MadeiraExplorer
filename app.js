@@ -9,21 +9,13 @@
 // ----------------------------
 
 
-const favoriteSpots = [
-
-    "🐠 Garajau Schnorcheln",
-
-    "🖤 Seixal Strand",
-
-    "🌊 Porto Moniz Lavapools",
-
-    "🏖️ Calheta Baden",
-
-    "🌲 Fanal Wald",
-
-    "🥾 Rabaçal Wanderung"
-
-];
+// Escaped einen String für die sichere Verwendung innerhalb eines
+// einfach gequoteten JS-Strings in einem doppelt gequoteten HTML-Attribut
+// (z.B. onclick="removeFavorite('...')") - verhindert Fehler bei Namen mit
+// Apostroph wie "🍹 Joe's Bar".
+function escapeForInlineJs(str) {
+    return String(str).replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+}
 
 
 
@@ -119,7 +111,7 @@ function showFavorites(){
         <br><br>
 
         <button onclick="
-        removeFavorite('${place}')
+        removeFavorite('${escapeForInlineJs(place)}')
         ">
 
         Entfernen

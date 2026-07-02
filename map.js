@@ -4,6 +4,15 @@
 // =====================================
 
 console.log("Madeira Map V5.3 geladen");
+
+// Escaped einen String für die sichere Verwendung innerhalb eines
+// einfach gequoteten JS-Strings in einem doppelt gequoteten HTML-Attribut
+// (z.B. onclick="savePlace('...')") - verhindert Fehler bei Namen mit Apostroph
+// wie "🍹 Joe's Bar".
+function escapeForInlineJs(str) {
+    return String(str).replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+}
+
 let markers = [];
 let activeCategory = "alle";
 let editMode = false;
@@ -62,7 +71,24 @@ L.tileLayer(
 
 const spots = madeiraSpots;
 
+// =====================================
+// Gespeicherte Koordinaten anwenden
+// =====================================
 
+const corrections = JSON.parse(
+    localStorage.getItem("madeiraCorrections") || "{}"
+);
+
+spots.forEach(spot => {
+
+    const c = corrections[spot.id];
+
+    if(!c) return;
+
+    spot.lat = c.lat;
+    spot.lng = c.lng;
+
+});
 
 
 
@@ -107,7 +133,7 @@ const marker = L.marker(
 <p>${spot.description}</p>
 
 <button
-onclick="savePlace('${spot.name}')"
+onclick="savePlace('${escapeForInlineJs(spot.name)}')"
 style="
 background:#0077b6;
 color:white;
@@ -350,17 +376,54 @@ Longitude<br>
 value="${spot.lng}"
 style="width:100%;margin-bottom:8px;">
 
+<div id="correctionCount"
+     style="
+        margin:10px 0;
+        font-weight:bold;
+        color:#2e7d32;
+">
+</div>
+
+<div id="correctionList"
+     style="
+        max-height:140px;
+        overflow-y:auto;
+        border:1px solid #ccc;
+        border-radius:6px;
+        padding:6px;
+        font-size:13px;
+        background:#fafafa;
+        margin-bottom:10px;
+">
+</div>
+
 <button onclick="saveCoordinates()">
 Speichern
 </button>
+
+
 
 <button onclick="copyCoordinates()">
 JS kopieren
 </button>
 
+<button onclick="deletePoi()">
+🗑 POI löschen
+</button>
+
+<button onclick="exportCorrections()">
+    📥 Änderungen exportieren
+</button>
+
+<button onclick="clearCorrections()">
+    🗑 Änderungen löschen
+</button>
+
 `;
 
-    document.getElementById("spotDetails").innerHTML=html;
+    document.getElementById("spotDetails").innerHTML = html;
+
+	updateCorrectionCount();
 
 }
 
@@ -368,31 +431,244 @@ function saveCoordinates(){
 
     if(!selectedMarker) return;
 
-    const lat=parseFloat(
+    const lat = parseFloat(
         document.getElementById("editLat").value
     );
 
-    const lng=parseFloat(
+    const lng = parseFloat(
         document.getElementById("editLng").value
     );
 
     selectedMarker.setLatLng([lat,lng]);
 
-    selectedMarker.spot.lat=lat;
-    selectedMarker.spot.lng=lng;
+    selectedMarker.spot.lat = lat;
+    selectedMarker.spot.lng = lng;
+
+    // ===== dauerhaft speichern =====
+
+    let corrections = JSON.parse(
+        localStorage.getItem("madeiraCorrections") || "{}"
+    );
+
+    corrections[selectedMarker.spot.id] = {
+        lat: lat,
+        lng: lng
+    };
+
+    localStorage.setItem(
+        "madeiraCorrections",
+        JSON.stringify(corrections)
+    );
+	
+	updateCorrectionCount();
+
+    alert("Koordinaten gespeichert");
+}
+
+// =====================================
+// Geänderte POIs exportieren
+// =====================================
+
+function exportCorrections(){
+
+    const corrections = JSON.parse(
+        localStorage.getItem("madeiraCorrections") || "{}"
+    );
+
+    const now = new Date().toLocaleString("de-DE");
+
+	let output =
+	`// Geänderte POIs
+	// Export: ${now}
+
+	`;
+
+    spots.forEach(spot => {
+
+        if(!corrections[spot.id]) return;
+
+        output += `{
+    id: "${spot.id}",
+    name: ${JSON.stringify(spot.name)},
+    category: "${spot.category}",
+    lat: ${spot.lat},
+    lng: ${spot.lng},
+    description: ${JSON.stringify(spot.description)},
+    details: \`${spot.details}\`,
+    gpsChecked: ${spot.gpsChecked},
+    status: "${spot.status}"
+},
+
+`;
+
+    });
+
+    if(Object.keys(corrections).length===0){
+        alert("Keine Änderungen vorhanden.");
+        return;
+    }
+
+    const blob = new Blob([output],{
+        type:"text/javascript"
+    });
+
+    const link = document.createElement("a");
+
+    link.href = URL.createObjectURL(blob);
+
+    link.download = "spots-korrekturen.js";
+
+    link.click();
+
+    URL.revokeObjectURL(link.href);
+
+// ------------------------------------
+// Jetzt zusätzlich Löschliste exportieren
+// ------------------------------------
+
+const deleted = JSON.parse(
+    localStorage.getItem("madeiraDelete") || "[]"
+);
+
+if(deleted.length){
+
+    const now = new Date().toLocaleString("de-DE");
+
+    let text =
+`// Zu löschende POIs
+// Export: ${now}
+
+`;
+
+    deleted.sort().forEach(id=>{
+        text += id + "\n";
+    });
+
+    const blob2 = new Blob([text],{
+        type:"text/plain"
+    });
+
+    const a2 = document.createElement("a");
+
+    a2.href = URL.createObjectURL(blob2);
+    a2.download = "spots-loeschen.txt";
+    a2.click();
+
+    URL.revokeObjectURL(a2.href);
 
 }
 
-function copyCoordinates(){
+}
+
+// =====================================
+// Änderungen löschen
+// =====================================
+
+function clearCorrections(){
+
+    if(!confirm("Alle gespeicherten Änderungen löschen?"))
+        return;
+
+    localStorage.removeItem("madeiraCorrections");
+	localStorage.removeItem("madeiraDelete");
+
+    alert("Änderungen gelöscht.");
+	
+	updateCorrectionCount();
+
+    location.reload();
+
+}
+
+function updateCorrectionCount(){
+
+    const corrections = JSON.parse(
+        localStorage.getItem("madeiraCorrections") || "{}"
+    );
+
+    const ids = Object.keys(corrections).sort();
+
+    document.getElementById("correctionCount").textContent =
+        "Geänderte POIs: " + ids.length;
+
+    const list = document.getElementById("correctionList");
+
+    if(ids.length===0){
+
+        list.innerHTML="<i>Keine Änderungen vorhanden.</i>";
+        return;
+
+    }
+
+    list.innerHTML = ids.map(id =>
+        "✔ " + id
+    ).join("<br>");
+
+}
+
+function deletePoi(){
 
     if(!selectedMarker) return;
 
-    const txt=
-`lat: ${selectedMarker.spot.lat},
-lng: ${selectedMarker.spot.lng},`;
+    if(!confirm(
+        selectedMarker.spot.name +
+        "\n\nWirklich zum Löschen vormerken?"
+    )) return;
 
-    navigator.clipboard.writeText(txt);
+    let deleted = JSON.parse(
+        localStorage.getItem("madeiraDelete") || "[]"
+    );
 
-    alert("Koordinaten kopiert");
+    if(!deleted.includes(selectedMarker.spot.id))
+        deleted.push(selectedMarker.spot.id);
+
+    localStorage.setItem(
+        "madeiraDelete",
+        JSON.stringify(deleted)
+    );
+	selectedMarker.remove();
+
+	updateCorrectionCount();
+
+    alert("POI zum Löschen vorgemerkt.");
+
+}
+
+function exportDeleted(){
+
+    const deleted = JSON.parse(
+        localStorage.getItem("madeiraDelete") || "[]"
+    );
+
+    if(deleted.length===0){
+        alert("Keine Löschungen.");
+        return;
+    }
+
+    const now = new Date().toLocaleString("de-DE");
+
+    let text =
+`// Zu löschende POIs
+// Export: ${now}
+
+`;
+
+    deleted.sort().forEach(id=>{
+        text += id + "\n";
+    });
+
+    const blob=new Blob([text],{
+        type:"text/plain"
+    });
+
+    const a=document.createElement("a");
+
+    a.href=URL.createObjectURL(blob);
+
+    a.download="spots-loeschen.txt";
+
+    a.click();
+
+    URL.revokeObjectURL(a.href);
 
 }

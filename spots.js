@@ -79,10 +79,11 @@ const madeiraSpots = [
     id: "doca-cavacas",
     name: "🌊 Doca do Cavacas",
     category: "naturpool",
-    lat: 32.637942,
-    lng: -16.945763,
+    lat: 32.6353,
+    lng: -16.9479,
     description: `Kleine natürliche Meerespools direkt am Atlantik.`,
-    status: "checked"
+    gpsChecked: true,
+    status: "finished"
 },
 
 {
@@ -105,8 +106,8 @@ const madeiraSpots = [
     lng: -17.227350,
     description: `Fischerdorf mit Meerzugang und spektakulären Sonnenuntergängen.`,
     details: `Paul do Mar ist eines der bekanntesten Fischerdörfer Madeiras. Entlang der Uferpromenade gibt es mehrere Zugänge zum Meer sowie kleine Badebereiche zwischen den Felsen. Der Ort ist außerdem ein beliebter Treffpunkt für Surfer und bietet zahlreiche Restaurants mit Blick auf den Atlantik.`,
-    gpsChecked: false,
-    status: "open"
+    gpsChecked: true,
+    status: "finished"
 },
 
 {
@@ -316,31 +317,14 @@ const madeiraSpots = [
 },
 
 {
-    id: "lidl-ribeira-brava",
-    name: "🛒 Lidl Ribeira Brava",
-    category: "supermarkt",
-    lat: 32.671836,
-    lng: -17.067593,
-    description: `Großer Lidl auf dem Weg zwischen Calheta und Funchal.`,
-    details: `Der Lidl Ribeira Brava eignet sich ideal für preisbewusste Einkäufe. Neben dem gewohnten Sortiment gibt es täglich frisches Brot, Obst und Gemüse sowie regelmäßig portugiesische Spezialitäten. Durch die Lage direkt an der Schnellstraße ist der Supermarkt bequem erreichbar.
-
-• Sortiment: Vollsortiment
-• Lage: Ribeira Brava
-• Parkplätze: kostenlos
-• Google: ⭐ 4,5
-• Ideal für: Großeinkauf`,
-    gpsChecked: true,
-    status: "finished"
-},
-
-{
     id: "marina-calheta",
     name: "⛵ Marina Calheta",
     category: "ausflug",
     lat: 32.721500,
     lng: -17.177800,
     description: `Schöner Ausgangspunkt für Spaziergänge, Restaurants und Meerblick.`,
-    status: "estimate"
+    gpsChecked: true,
+    status: "finished"
 },
 
 {
@@ -350,7 +334,8 @@ const madeiraSpots = [
     lat: 32.670700,
     lng: -17.064700,
     description: `Kleiner Küstenort mit Strand, Cafés und guter Infrastruktur.`,
-    status: "estimate"
+    gpsChecked: true,
+    status: "finished"
 },
 
 {
@@ -787,77 +772,7 @@ const madeiraSpots = [
     status:"finished"
 },
 
-{
-    id:"talho-ribeiro-calheta",
 
-    name:"🥩 Talho Ribeiro Calheta",
-
-    category:"metzgerei",
-
-    lat:32.720864,
-    lng:-17.176283,
-
-    description:"Traditionelle Metzgerei mit regionalem Fleisch und Spezialitäten.",
-
-    details:`Der Talho Ribeiro bietet frisches Rind-, Schweine- und Geflügelfleisch sowie regionale Spezialitäten Madeiras. Besonders beliebt sind marinierte Fleischspieße und Grillfleisch.
-
-• Sortiment: Fleisch & regionale Spezialitäten
-• Lage: Calheta
-• Google: ⭐ 4,7
-• Ideal für: Grillen & Selbstversorgung`,
-
-    gpsChecked:true,
-
-    status:"finished"
-},
-
-{
-    id:"peixaria-calheta",
-
-    name:"🐟 Peixaria da Calheta",
-
-    category:"fisch",
-
-    lat:32.721052,
-    lng:-17.176018,
-
-    description:"Frischer Atlantikfisch und Meeresfrüchte im Zentrum von Calheta.",
-
-    details:`Die Peixaria verkauft täglich fangfrischen Fisch aus Madeira, darunter Thunfisch, Degenfisch (Espada), Dorade und verschiedene Meeresfrüchte. Eine gute Adresse für alle, die in der Unterkunft selbst kochen möchten.
-
-• Sortiment: Frischer Fisch & Meeresfrüchte
-• Lage: Calheta
-• Google: ⭐ 4,6
-• Ideal für: Frischen Fisch aus Madeira`,
-
-    gpsChecked:true,
-
-    status:"finished"
-},
-
-{
-    id:"frutaria-calheta",
-
-    name:"🍌 Frutaria Calheta",
-
-    category:"obst",
-
-    lat:32.720793,
-    lng:-17.176604,
-
-    description:"Kleiner Obst- und Gemüseladen mit regionalen Produkten.",
-
-    details:`Die Frutaria bietet frisches Obst und Gemüse aus Madeira, darunter Bananen, Maracuja, Mangos sowie saisonale Früchte der Insel. Ideal, um lokale Spezialitäten zu probieren.
-
-• Sortiment: Obst & Gemüse
-• Lage: Calheta
-• Google: ⭐ 4,6
-• Ideal für: Regionale Früchte & frische Lebensmittel`,
-
-    gpsChecked:true,
-
-    status:"finished"
-},
 
 {
     id:"funchal",
