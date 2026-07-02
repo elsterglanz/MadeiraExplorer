@@ -441,8 +441,8 @@ const madeiraSpots = [
     id: "manifattura-gelato",
     name: "🍕 Manifattura Di Gelato",
     category: "essen",
-    lat: 32.720740,
-    lng: -17.177240,
+    lat: 32.71835474267299,
+    lng: -17.171421243004833,
     description: `Beliebtes italienisches Restaurant direkt an der Marina von Calheta.`,
     details: `Manifattura Di Gelato gehört zu den beliebtesten Restaurants Madeiras und verbindet authentische italienische Küche mit hausgemachtem Gelato. Die große Terrasse direkt am Yachthafen bietet einen herrlichen Blick auf die Marina und den Atlantik. Besonders Pizza, Pasta und die Eisspezialitäten genießen einen hervorragenden Ruf.
 
@@ -460,8 +460,8 @@ const madeiraSpots = [
     id: "leme-marisqueira",
     name: "🦞 Leme Marisqueira",
     category: "essen",
-    lat: 32.720936,
-    lng: -17.176978,
+    lat: 32.718635375686404,
+    lng: -17.172077036950135,
     description: `Beliebtes Fischrestaurant direkt an der Marina von Calheta.`,
     details: `Leme Marisqueira gehört zu den bekanntesten Restaurants in Calheta und ist besonders für frischen Fisch, Meeresfrüchte und typisch madeirensische Spezialitäten bekannt. Die große Terrasse direkt am Yachthafen bietet einen herrlichen Blick auf die Marina und den Atlantik. Freundlicher Service und großzügige Portionen machen das Restaurant zu einer der besten Adressen für ein entspanntes Abendessen.
 
@@ -498,8 +498,8 @@ const madeiraSpots = [
     id: "o-ideal",
     name: "🐟 Restaurante O Ideal",
     category: "essen",
-    lat: 32.753882,
-    lng: -17.230102,
+    lat: 32.75292957288899,
+    lng: -17.224905451072992,
     description: `Traditionelles Restaurant direkt an der Promenade von Paul do Mar.`,
     details: `Das Restaurante O Ideal zählt zu den bekanntesten Adressen an der Südwestküste Madeiras. Direkt am Meer gelegen werden hier frischer Fisch, Meeresfrüchte und typische madeirensische Spezialitäten serviert. Trotz seiner einfachen, ungezwungenen Atmosphäre überzeugt das Restaurant seit Jahren mit hervorragender Qualität und einem ausgezeichneten Preis-Leistungs-Verhältnis.
 
@@ -517,8 +517,8 @@ const madeiraSpots = [
     id: "sol-poente",
     name: "🌅 Restaurante Sol Poente",
     category: "essen",
-    lat: 32.754426,
-    lng: -17.230506,
+    lat: 32.6786297366095,
+    lng: -17.10421604460533,
     description: `Restaurant direkt am Meer mit regionaler Küche und spektakulären Sonnenuntergängen.`,
     details: `Das Restaurante Sol Poente liegt unmittelbar an der Uferpromenade von Paul do Mar und gehört zu den schönsten Plätzen für ein Abendessen mit Blick auf den Atlantik. Serviert werden frischer Fisch, Espetada, Meeresfrüchte sowie weitere traditionelle Spezialitäten Madeiras. Die Terrasse direkt am Wasser macht das Restaurant besonders in den Abendstunden zu einem beliebten Treffpunkt.
 
@@ -536,8 +536,8 @@ const madeiraSpots = [
     id: "maktub-pub",
     name: "🍹 Maktub Pub",
     category: "essen",
-    lat: 32.754942,
-    lng: -17.230768,
+    lat: 32.76504968442537,
+    lng: -17.23456843716952,
     description: `Beliebte Sunset-Bar mit Snacks, Cocktails und Meerblick.`,
     details: `Das Maktub Pub ist einer der bekanntesten Treffpunkte in Paul do Mar. Direkt an der Promenade gelegen bietet die Terrasse einen fantastischen Blick auf den Atlantik und spektakuläre Sonnenuntergänge. Neben Cocktails und regionalem Bier werden Burger, Sandwiches und kleine Gerichte serviert. Ideal für einen entspannten Ausklang des Tages.
 
@@ -555,8 +555,8 @@ const madeiraSpots = [
     id: "joes-bar",
     name: "🍹 Joe's Bar",
     category: "essen",
-    lat: 32.738138,
-    lng: -17.213421,
+    lat: 32.73854743974976,
+    lng: -17.211095559606953,
     description: `Beliebte Bar und Restaurant mit Meerblick im Herzen von Jardim do Mar.`,
     details: `Joe's Bar gehört seit vielen Jahren zu den bekanntesten Treffpunkten in Jardim do Mar. Direkt an der Promenade gelegen bietet die Terrasse einen herrlichen Blick auf den Atlantik. Serviert werden Burger, Steaks, Fischgerichte, Cocktails und regionale Getränke. Besonders zum Sonnenuntergang herrscht hier eine entspannte Atmosphäre.
 
