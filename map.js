@@ -13,6 +13,71 @@ function escapeForInlineJs(str) {
     return String(str).replace(/\\/g, "\\\\").replace(/'/g, "\\'");
 }
 
+// ----------------------------
+// Sicherer localStorage-Zugriff
+// ----------------------------
+// (siehe app.js für Details - hier dupliziert, da map.js vor app.js
+// geladen wird und die Funktionen daher noch nicht zur Verfügung stehen)
+
+function safeGetJSON(key, fallback) {
+
+    try {
+
+        let raw = localStorage.getItem(key);
+
+        if (raw === null) return fallback;
+
+        return JSON.parse(raw);
+
+    } catch (err) {
+
+        console.warn("localStorage lesen fehlgeschlagen für '" + key + "':", err);
+
+        return fallback;
+
+    }
+
+}
+
+
+function safeSetJSON(key, value) {
+
+    try {
+
+        localStorage.setItem(key, JSON.stringify(value));
+
+        return true;
+
+    } catch (err) {
+
+        console.warn("localStorage schreiben fehlgeschlagen für '" + key + "':", err);
+
+        return false;
+
+    }
+
+}
+
+
+function safeRemoveItem(key) {
+
+    try {
+
+        localStorage.removeItem(key);
+
+        return true;
+
+    } catch (err) {
+
+        console.warn("localStorage löschen fehlgeschlagen für '" + key + "':", err);
+
+        return false;
+
+    }
+
+}
+
+
 let markers = [];
 let activeCategory = "alle";
 let editMode = false;
@@ -75,9 +140,7 @@ const spots = madeiraSpots;
 // Gespeicherte Koordinaten anwenden
 // =====================================
 
-const corrections = JSON.parse(
-    localStorage.getItem("madeiraCorrections") || "{}"
-);
+const corrections = safeGetJSON("madeiraCorrections", {});
 
 spots.forEach(spot => {
 
@@ -329,6 +392,146 @@ function filterMarkers(cat){
 
 }
 // ======================================
+// In meiner Nähe
+// ======================================
+
+function haversineDistanceKm(lat1, lng1, lat2, lng2) {
+
+    const R = 6371; // Erdradius in km
+
+    const toRad = deg => deg * Math.PI / 180;
+
+    const dLat = toRad(lat2 - lat1);
+    const dLng = toRad(lng2 - lng1);
+
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+        Math.sin(dLng / 2) * Math.sin(dLng / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return R * c;
+
+}
+
+
+function formatDistance(km) {
+
+    if (km < 1) return Math.round(km * 1000) + " m";
+
+    return km.toFixed(1).replace(".", ",") + " km";
+
+}
+
+
+function findNearbySpots() {
+
+    const detailsBox = document.getElementById("spotDetails");
+
+    if (!detailsBox) return;
+
+    if (!navigator.geolocation) {
+        alert("Dein Browser unterstützt keine Standortbestimmung.");
+        return;
+    }
+
+    detailsBox.innerHTML = "<p>📍 Standort wird ermittelt…</p>";
+
+    navigator.geolocation.getCurrentPosition(
+
+        position => {
+
+            const userLat = position.coords.latitude;
+            const userLng = position.coords.longitude;
+
+            const withDistance = markers
+                .filter(marker =>
+                    activeCategory === "alle" ||
+                    marker.category === activeCategory
+                )
+                .map(marker => ({
+                    marker: marker,
+                    distanceKm: haversineDistanceKm(
+                        userLat, userLng,
+                        marker.spot.lat, marker.spot.lng
+                    )
+                }))
+                .sort((a, b) => a.distanceKm - b.distanceKm)
+                .slice(0, 12);
+
+            if (withDistance.length === 0) {
+                detailsBox.innerHTML =
+                    "<p>Keine Spots in dieser Kategorie gefunden.</p>";
+                return;
+            }
+
+            let html = `<h3>📍 Nächste Spots</h3><ul class="nearby-list">`;
+
+            withDistance.forEach((entry, index) => {
+
+                const icon = markerIcons[entry.marker.spot.category] || "📍";
+
+                html += `
+                    <li onclick="focusNearbySpot(${index})">
+                        <span>${icon} ${entry.marker.spot.name}</span>
+                        <span class="nearby-distance">${formatDistance(entry.distanceKm)}</span>
+                    </li>
+                `;
+
+            });
+
+            html += `</ul>`;
+
+            detailsBox.innerHTML = html;
+
+            window._nearbyMarkers = withDistance.map(e => e.marker);
+
+        },
+
+        error => {
+
+            let msg = "Standort konnte nicht ermittelt werden.";
+
+            if (error.code === error.PERMISSION_DENIED) {
+                msg = "Standortzugriff wurde verweigert. Bitte in den Browser-/System-Einstellungen erlauben.";
+            }
+
+            detailsBox.innerHTML = `<p>⚠️ ${msg}</p>`;
+
+        },
+
+        { enableHighAccuracy: true, timeout: 10000 }
+
+    );
+
+}
+
+
+function focusNearbySpot(index) {
+
+    const marker = window._nearbyMarkers && window._nearbyMarkers[index];
+
+    if (!marker) return;
+
+    map.setView(marker.getLatLng(), 15);
+
+    marker.openPopup();
+
+}
+
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const btn = document.getElementById("nearMeBtn");
+
+    if (btn) {
+        btn.addEventListener("click", findNearbySpots);
+    }
+
+});
+
+// ======================================
 // Koordinateneditor
 // ======================================
 
@@ -427,6 +630,46 @@ JS kopieren
 
 }
 
+function copyCoordinates(){
+
+    if(!selectedMarker) return;
+
+    const lat = parseFloat(
+        document.getElementById("editLat").value
+    );
+
+    const lng = parseFloat(
+        document.getElementById("editLng").value
+    );
+
+    const snippet =
+`{
+    id: "${selectedMarker.spot.id}",
+    name: ${JSON.stringify(selectedMarker.spot.name)},
+    category: "${selectedMarker.spot.category}",
+    lat: ${lat},
+    lng: ${lng},
+    description: ${JSON.stringify(selectedMarker.spot.description)},
+    details: \`${selectedMarker.spot.details || ""}\`,
+    gpsChecked: true,
+    status: "finished"
+},`;
+
+    if(navigator.clipboard && navigator.clipboard.writeText){
+
+        navigator.clipboard.writeText(snippet)
+            .then(()=> alert("JS-Snippet in Zwischenablage kopiert."))
+            .catch(()=> prompt("Kopieren fehlgeschlagen. Manuell kopieren:", snippet));
+
+    } else {
+
+        prompt("JS-Snippet manuell kopieren:", snippet);
+
+    }
+
+}
+
+
 function saveCoordinates(){
 
     if(!selectedMarker) return;
@@ -446,19 +689,14 @@ function saveCoordinates(){
 
     // ===== dauerhaft speichern =====
 
-    let corrections = JSON.parse(
-        localStorage.getItem("madeiraCorrections") || "{}"
-    );
+    let corrections = safeGetJSON("madeiraCorrections", {});
 
     corrections[selectedMarker.spot.id] = {
         lat: lat,
         lng: lng
     };
 
-    localStorage.setItem(
-        "madeiraCorrections",
-        JSON.stringify(corrections)
-    );
+    safeSetJSON("madeiraCorrections", corrections);
 	
 	updateCorrectionCount();
 
@@ -471,9 +709,7 @@ function saveCoordinates(){
 
 function exportCorrections(){
 
-    const corrections = JSON.parse(
-        localStorage.getItem("madeiraCorrections") || "{}"
-    );
+    const corrections = safeGetJSON("madeiraCorrections", {});
 
     const now = new Date().toLocaleString("de-DE");
 
@@ -526,9 +762,7 @@ function exportCorrections(){
 // Jetzt zusätzlich Löschliste exportieren
 // ------------------------------------
 
-const deleted = JSON.parse(
-    localStorage.getItem("madeiraDelete") || "[]"
-);
+const deleted = safeGetJSON("madeiraDelete", []);
 
 if(deleted.length){
 
@@ -569,8 +803,8 @@ function clearCorrections(){
     if(!confirm("Alle gespeicherten Änderungen löschen?"))
         return;
 
-    localStorage.removeItem("madeiraCorrections");
-	localStorage.removeItem("madeiraDelete");
+    safeRemoveItem("madeiraCorrections");
+	safeRemoveItem("madeiraDelete");
 
     alert("Änderungen gelöscht.");
 	
@@ -582,9 +816,7 @@ function clearCorrections(){
 
 function updateCorrectionCount(){
 
-    const corrections = JSON.parse(
-        localStorage.getItem("madeiraCorrections") || "{}"
-    );
+    const corrections = safeGetJSON("madeiraCorrections", {});
 
     const ids = Object.keys(corrections).sort();
 
@@ -615,17 +847,12 @@ function deletePoi(){
         "\n\nWirklich zum Löschen vormerken?"
     )) return;
 
-    let deleted = JSON.parse(
-        localStorage.getItem("madeiraDelete") || "[]"
-    );
+    let deleted = safeGetJSON("madeiraDelete", []);
 
     if(!deleted.includes(selectedMarker.spot.id))
         deleted.push(selectedMarker.spot.id);
 
-    localStorage.setItem(
-        "madeiraDelete",
-        JSON.stringify(deleted)
-    );
+    safeSetJSON("madeiraDelete", deleted);
 	selectedMarker.remove();
 
 	updateCorrectionCount();
@@ -636,9 +863,7 @@ function deletePoi(){
 
 function exportDeleted(){
 
-    const deleted = JSON.parse(
-        localStorage.getItem("madeiraDelete") || "[]"
-    );
+    const deleted = safeGetJSON("madeiraDelete", []);
 
     if(deleted.length===0){
         alert("Keine Löschungen.");

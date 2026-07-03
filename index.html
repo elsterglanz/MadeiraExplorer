@@ -20,6 +20,10 @@ href="style.css">
 <link rel="manifest"
 href="manifest.json">
 
+<meta name="theme-color" content="#0077b6">
+
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+
 
 <link rel="stylesheet"
 href="https://unpkg.com/leaflet/dist/leaflet.css">
@@ -39,6 +43,8 @@ href="https://unpkg.com/leaflet/dist/leaflet.css">
 07.07.–17.07.2026<br>
 📍 Arco da Calheta
 </p>
+
+<p id="countdown" class="countdown"></p>
 
 
 <div class="badges">
@@ -74,11 +80,25 @@ href="https://unpkg.com/leaflet/dist/leaflet.css">
 
 <main class="layout">
 
+    <section class="card weather-card" id="wetter">
+
+        <h2>☀️ Wetter in Arco da Calheta</h2>
+
+        <div id="weatherWidget" class="weather">
+            <p>Wetter wird geladen…</p>
+        </div>
+
+    </section>
+
     <section class="card map-card" id="karte">
 
         <h2>🗺️ Interaktive Karte</h2>
 
         <div id="filterBar" class="filter-bar"></div>
+
+        <button id="nearMeBtn" type="button" class="near-me-btn">
+            📍 In meiner Nähe
+        </button>
 
         <div id="map"></div>
 
@@ -100,9 +120,11 @@ href="https://unpkg.com/leaflet/dist/leaflet.css">
 
         <h2>📅 Reiseplan</h2>
 
+        <div id="planProgress" class="plan-progress"></div>
+
         <div class="day">
 
-<input type="checkbox">
+<input type="checkbox" data-day="07.07.">
 
 <b>07.07.</b>
 
@@ -123,7 +145,7 @@ Route starten
 
 <div class="day">
 
-<input type="checkbox">
+<input type="checkbox" data-day="08.07.">
 
 <b>08.07.</b>
 
@@ -140,7 +162,7 @@ Levada Wanderung
 
 <div class="day">
 
-<input type="checkbox">
+<input type="checkbox" data-day="09.07.">
 
 <b>09.07.</b>
 
@@ -157,7 +179,7 @@ Porto Moniz + Seixal
 
 <div class="day">
 
-<input type="checkbox">
+<input type="checkbox" data-day="11.07.">
 
 <b>11.07.</b>
 
@@ -174,7 +196,7 @@ Garajau
 
 <div class="day">
 
-<input type="checkbox">
+<input type="checkbox" data-day="14.07.">
 
 <b>14.07.</b>
 
@@ -234,7 +256,24 @@ Ponta de São Lourenço
 
 <script src="map.js"></script>
 
+<script src="weather.js"></script>
+
 <script src="app.js"></script>
+
+<script>
+// Service Worker registrieren - Voraussetzung dafür, dass Chrome/Android
+// die Seite überhaupt als installierbare PWA erkennt.
+// Relativer Pfad, damit es sowohl auf username.github.io als auch auf
+// username.github.io/reponame/ funktioniert (Scope = Ordner dieser Datei).
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker
+            .register("service-worker.js")
+            .then(reg => console.log("Service Worker registriert:", reg.scope))
+            .catch(err => console.warn("Service Worker Registrierung fehlgeschlagen:", err));
+    });
+}
+</script>
 
 
 </body>

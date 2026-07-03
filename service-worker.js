@@ -1,4 +1,4 @@
-const CACHE="madeira-v6";
+const CACHE="madeira-v7";
 
 
 const FILES=[
@@ -7,10 +7,13 @@ const FILES=[
 "style.css",
 "app.js",
 "map.js",
+"weather.js",
 "spots.js",
 "manifest.json",
 "icons/icon-192.png",
-"icons/icon-512.png"
+"icons/icon-512.png",
+"icons/icon-192-maskable.png",
+"icons/icon-512-maskable.png"
 
 ];
 

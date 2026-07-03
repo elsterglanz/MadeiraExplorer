@@ -19,13 +19,96 @@ function escapeForInlineJs(str) {
 
 
 
+// ----------------------------
+// Sicherer localStorage-Zugriff
+// ----------------------------
+// Kapselt localStorage-Zugriffe in try/catch, damit ein defekter
+// oder gesperrter Speicher (z.B. privater Modus, voller Speicher,
+// kaputtes JSON) nicht die ganze Seite mit einem Fehler abreißt.
+
+function safeGetJSON(key, fallback) {
+
+    try {
+
+        let raw = localStorage.getItem(key);
+
+        if (raw === null) return fallback;
+
+        return JSON.parse(raw);
+
+    } catch (err) {
+
+        console.warn("localStorage lesen fehlgeschlagen für '" + key + "':", err);
+
+        return fallback;
+
+    }
+
+}
+
+
+function safeSetJSON(key, value) {
+
+    try {
+
+        localStorage.setItem(key, JSON.stringify(value));
+
+        return true;
+
+    } catch (err) {
+
+        console.warn("localStorage schreiben fehlgeschlagen für '" + key + "':", err);
+
+        return false;
+
+    }
+
+}
+
+
+function safeGetItem(key, fallback) {
+
+    try {
+
+        let value = localStorage.getItem(key);
+
+        return value === null ? fallback : value;
+
+    } catch (err) {
+
+        console.warn("localStorage lesen fehlgeschlagen für '" + key + "':", err);
+
+        return fallback;
+
+    }
+
+}
+
+
+function safeSetItem(key, value) {
+
+    try {
+
+        localStorage.setItem(key, value);
+
+        return true;
+
+    } catch (err) {
+
+        console.warn("localStorage schreiben fehlgeschlagen für '" + key + "':", err);
+
+        return false;
+
+    }
+
+}
+
+
+
 function addFavorite(place){
 
 
-    let favorites =
-    JSON.parse(
-        localStorage.getItem("favorites")
-    ) || [];
+    let favorites = safeGetJSON("favorites", []);
 
 
 
@@ -37,10 +120,7 @@ function addFavorite(place){
 
 
 
-    localStorage.setItem(
-        "favorites",
-        JSON.stringify(favorites)
-    );
+    safeSetJSON("favorites", favorites);
 
 
     showFavorites();
@@ -68,10 +148,7 @@ function showFavorites(){
 
 
 
-    let favorites =
-    JSON.parse(
-        localStorage.getItem("favorites")
-    ) || [];
+    let favorites = safeGetJSON("favorites", []);
 
 
 
@@ -138,10 +215,7 @@ function showFavorites(){
 function removeFavorite(place){
 
 
-    let favorites =
-    JSON.parse(
-        localStorage.getItem("favorites")
-    ) || [];
+    let favorites = safeGetJSON("favorites", []);
 
 
 
@@ -152,13 +226,7 @@ function removeFavorite(place){
 
 
 
-    localStorage.setItem(
-
-        "favorites",
-
-        JSON.stringify(favorites)
-
-    );
+    safeSetJSON("favorites", favorites);
 
 
     showFavorites();
@@ -187,17 +255,13 @@ function saveNotes(){
 
 
 
-    localStorage.setItem(
-
-        "madeira_notes",
-
-        text
-
-    );
+    let ok = safeSetItem("madeira_notes", text);
 
 
     alert(
-        "📝 Urlaubstagebuch gespeichert!"
+        ok
+        ? "📝 Urlaubstagebuch gespeichert!"
+        : "⚠️ Speichern nicht möglich (Speicher voll oder blockiert)."
     );
 
 
@@ -209,10 +273,7 @@ function saveNotes(){
 function loadNotes(){
 
 
-    let notes =
-    localStorage.getItem(
-        "madeira_notes"
-    );
+    let notes = safeGetItem("madeira_notes", null);
 
 
 
@@ -238,7 +299,11 @@ function loadNotes(){
 // ----------------------------
 // Checkbox Speicher
 // ----------------------------
-
+//
+// Jede Checkbox trägt im HTML ein data-day="..." Attribut (z.B. "07.07.").
+// Der Status wird darüber als Objekt {tag: checked} gespeichert statt über
+// die Position im DOM - so bleibt der Speicherstand auch dann korrekt,
+// wenn Tage im Reiseplan hinzugefügt, entfernt oder umsortiert werden.
 
 
 function saveCheckboxes(){
@@ -250,29 +315,23 @@ function saveCheckboxes(){
     );
 
 
-    let states=[];
+    let states={};
 
 
     boxes.forEach(
-    box=>{
+    (box,index)=>{
 
-        states.push(
-            box.checked
-        );
+        let key = box.dataset.day || ("index-" + index);
+
+        states[key] = box.checked;
 
     });
 
 
 
-    localStorage.setItem(
+    safeSetJSON("checkboxes", states);
 
-        "checkboxes",
-
-        JSON.stringify(states)
-
-    );
-
-
+    updatePlanProgress();
 
 }
 
@@ -284,14 +343,7 @@ function saveCheckboxes(){
 function loadCheckboxes(){
 
 
-    let saved =
-    JSON.parse(
-
-        localStorage.getItem(
-            "checkboxes"
-        )
-
-    );
+    let saved = safeGetJSON("checkboxes", null);
 
 
 
@@ -311,13 +363,120 @@ function loadCheckboxes(){
 
     (box,index)=>{
 
+        let key = box.dataset.day || ("index-" + index);
 
         box.checked =
-        saved[index] || false;
+        saved[key] || false;
 
 
     });
 
+
+}
+
+
+
+
+// ----------------------------
+// Fortschrittsanzeige Reiseplan
+// ----------------------------
+
+
+function updatePlanProgress(){
+
+    let planSection =
+    document.getElementById("plan");
+
+    if(!planSection)
+    return;
+
+    let box =
+    document.getElementById("planProgress");
+
+    if(!box)
+    return;
+
+    let boxes =
+    planSection.querySelectorAll(
+        "input[type=checkbox]"
+    );
+
+    let total = boxes.length;
+
+    if(total === 0){
+        box.innerHTML = "";
+        return;
+    }
+
+    let done = 0;
+
+    boxes.forEach(b=>{
+        if(b.checked) done++;
+    });
+
+    let percent = Math.round((done / total) * 100);
+
+    box.innerHTML = `
+        <div class="plan-progress-label">
+            ${done} von ${total} Tagen erledigt
+        </div>
+        <div class="plan-progress-bar">
+            <div class="plan-progress-fill" style="width:${percent}%"></div>
+        </div>
+    `;
+
+}
+
+
+
+
+// ----------------------------
+// Countdown bis / während der Reise
+// ----------------------------
+
+
+function updateCountdown(){
+
+    let box =
+    document.getElementById("countdown");
+
+    if(!box)
+    return;
+
+    let start = new Date("2026-07-07T00:00:00");
+
+    let end = new Date("2026-07-17T23:59:59");
+
+    let now = new Date();
+
+    let msPerDay = 1000 * 60 * 60 * 24;
+
+    if(now < start){
+
+        let days = Math.ceil((start - now) / msPerDay);
+
+        box.textContent =
+            days === 1
+            ? "🌴 Noch 1 Tag bis Madeira!"
+            : `🌴 Noch ${days} Tage bis Madeira!`;
+
+    } else if(now >= start && now <= end){
+
+        let dayNumber =
+            Math.floor((now - start) / msPerDay) + 1;
+
+        let totalDays =
+            Math.round((end - start) / msPerDay) + 1;
+
+        box.textContent =
+            `🏝️ Tag ${dayNumber} von ${totalDays} auf Madeira!`;
+
+    } else {
+
+        box.textContent =
+            "💙 Der Urlaub ist vorbei – hoffentlich war's schön!";
+
+    }
 
 }
 
@@ -346,6 +505,12 @@ document.addEventListener(
 
 
     loadCheckboxes();
+
+
+    updatePlanProgress();
+
+
+    updateCountdown();
 
 
 

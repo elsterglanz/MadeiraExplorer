@@ -249,32 +249,286 @@ main{
 
     display:flex;
 
-    justify-content:
-    space-around;
+    flex-wrap:wrap;
+
+    gap:15px;
+
+    align-items:stretch;
+
+}
+
+
+.weather-current {
+
+    background:linear-gradient(135deg, var(--ocean), var(--sea));
+
+    color:white;
+
+    border-radius:15px;
+
+    padding:20px;
+
+    min-width:140px;
 
     text-align:center;
 
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    gap:6px;
+
+}
+
+
+.weather-current-icon {
+
+    font-size:2.4rem;
+
+}
+
+
+.weather-current-temp {
+
+    font-size:2rem;
+
+    font-weight:bold;
+
+}
+
+
+.weather-current-text {
+
+    font-size:0.9rem;
+
+    opacity:0.95;
+
+}
+
+
+.weather-days {
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:10px;
+
+    flex:1;
+
+}
+
+
+.weather-day {
+
+    background:#eaf7f8;
+
+    padding:12px 10px;
+
+    border-radius:15px;
+
+    text-align:center;
+
+    min-width:80px;
+
+    flex:1;
+
+}
+
+
+.weather-day-label {
+
+    font-weight:bold;
+
+    color:var(--dark);
+
+    text-transform:capitalize;
+
+    margin-bottom:4px;
+
+}
+
+
+.weather-day-icon {
+
+    font-size:1.6rem;
+
+}
+
+
+.weather-day-temp {
+
+    font-size:0.9rem;
+
+    margin-top:4px;
+
+}
+
+
+.weather-day-rain {
+
+    font-size:0.8rem;
+
+    color:var(--ocean);
+
+    margin-top:2px;
+
+}
+
+
+.weather-source {
+
+    width:100%;
+
+    text-align:right;
+
+    font-size:0.75rem;
+
+    color:#888;
+
+    margin:8px 0 0;
+
+}
+
+
+.weather-source a {
+
+    color:#888;
 
 }
 
 
 
-.weather div {
+/* Countdown im Header */
 
-    background:
-    #eaf7f8;
+.countdown {
+
+    margin-top:10px;
+
+    font-weight:bold;
+
+    font-size:1.1rem;
+
+    display:inline-block;
+
+    background:rgba(255,255,255,.2);
+
+    padding:8px 18px;
+
+    border-radius:30px;
+
+    backdrop-filter:blur(5px);
+
+}
 
 
-    padding:
-    15px;
+
+/* Fortschrittsanzeige Reiseplan */
+
+.plan-progress {
+
+    margin-bottom:20px;
+
+}
 
 
-    border-radius:
-    15px;
+.plan-progress-label {
+
+    font-weight:bold;
+
+    color:var(--dark);
+
+    margin-bottom:8px;
+
+}
 
 
-    min-width:
-    90px;
+.plan-progress-bar {
+
+    background:#e5f6fa;
+
+    border-radius:20px;
+
+    height:16px;
+
+    overflow:hidden;
+
+}
+
+
+.plan-progress-fill {
+
+    background:linear-gradient(90deg, var(--sea), var(--green));
+
+    height:100%;
+
+    border-radius:20px;
+
+    transition:width .3s ease;
+
+}
+
+
+
+/* "In meiner Nähe" Button */
+
+.near-me-btn {
+
+    margin-bottom:10px;
+
+}
+
+
+.nearby-list {
+
+    list-style:none;
+
+    margin:0;
+
+    padding:0;
+
+}
+
+
+.nearby-list li {
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:10px;
+
+    padding:10px 12px;
+
+    border-radius:12px;
+
+    background:#eefafa;
+
+    margin-bottom:8px;
+
+    cursor:pointer;
+
+}
+
+
+.nearby-list li:hover {
+
+    background:#d9edf7;
+
+}
+
+
+.nearby-distance {
+
+    font-weight:bold;
+
+    color:var(--ocean);
+
+    white-space:nowrap;
 
 }
 
@@ -714,6 +968,7 @@ footer {
 
     grid-template-areas:
 
+        "weather weather"
         "map details"
         "plan favorites"
         "plan diary";
@@ -722,6 +977,10 @@ footer {
 
 
 /* Bereiche */
+
+.weather-card{
+    grid-area:weather;
+}
 
 .map-card{
     grid-area:map;
@@ -771,6 +1030,7 @@ footer {
 
         grid-template-areas:
 
+            "weather"
             "map"
             "details"
             "plan"
